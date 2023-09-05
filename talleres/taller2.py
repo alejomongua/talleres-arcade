@@ -14,22 +14,41 @@ class Arbol:
         arcade.draw_lrtb_rectangle_filled(self.x, self.x + 20, self.y, self.y - 40, arcade.color.BROWN)
         arcade.draw_circle_filled(self.x + 10, self.y, 30, arcade.color.DARK_GREEN)
 
-class Animal:
+class Pato:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
     def dibujar(self):
-        arcade.draw_circle_filled(self.x, self.y, 20, arcade.color.BLUE)
+        # Cuerpo del pato
+        arcade.draw_ellipse_filled(self.x, self.y, 40, 30, arcade.color.YELLOW)
+        # Pico del pato
+        arcade.draw_triangle_filled(self.x + 20, self.y, self.x + 30, self.y + 5, self.x + 30, self.y - 5, arcade.color.ORANGE)
+        # Ojo del pato
+        arcade.draw_circle_filled(self.x + 15, self.y + 5, 3, arcade.color.BLACK)
 
-class Edificio:
-    def __init__(self, x, y, altura):
+class Perro:
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.altura = altura
 
     def dibujar(self):
-        arcade.draw_lrtb_rectangle_filled(self.x, self.x + 50, self.y, self.y - self.altura, arcade.color.GRAY)
+        # Cuerpo del perro
+        arcade.draw_ellipse_filled(self.x, self.y, 60, 40, arcade.color.BROWN)
+        
+        # Cabeza del perro
+        arcade.draw_circle_filled(self.x + 40, self.y + 10, 20, arcade.color.BROWN)
+        
+        # Ojos del perro
+        arcade.draw_circle_filled(self.x + 45, self.y + 15, 3, arcade.color.BLACK)
+        arcade.draw_circle_filled(self.x + 35, self.y + 15, 3, arcade.color.BLACK)
+        
+        # Nariz del perro
+        arcade.draw_circle_filled(self.x + 40, self.y + 5, 3, arcade.color.BLACK)
+        
+        # Orejas del perro
+        arcade.draw_ellipse_filled(self.x + 30, self.y + 20, 10, 20, arcade.color.DARK_BROWN)
+        arcade.draw_ellipse_filled(self.x + 50, self.y + 20, 10, 20, arcade.color.DARK_BROWN)
 
 class MiniMundo(arcade.Window):
     def __init__(self):
@@ -43,18 +62,17 @@ class MiniMundo(arcade.Window):
 
         # Dibujar árboles
         for x in range(100, 701, 150):
-            arbol = Arbol(x, 100)
+            arbol = Arbol(x, 300)
             arbol.dibujar()
 
         # Dibujar animales
         for x in range(150, 651, 150):
-            animal = Animal(x, 300)
+            animal = Pato(x, 500)
             animal.dibujar()
 
-        # Dibujar edificios
-        for x in range(200, 601, 200):
-            edificio = Edificio(x, 500, 50)
-            edificio.dibujar()
+        # Dibujar perros
+        perro = Perro(400, 100)
+        perro.dibujar()
 
 if __name__ == "__main__":
     app = MiniMundo()
