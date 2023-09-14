@@ -1,28 +1,53 @@
 import arcade
 import math
+from PIL import Image
+
+class CustomSprite():
+    def __init__(self, path:str, columns:int, rows:int):
+
+        image = Image.open(path)
+
+        self.image_width, self.image_height = image.size
+
+        self.columns = columns
+        self.rows = rows
+        self.path = path
+        self.spritesize_x = self.image_width // columns
+        self.spritesize_y = self.image_height // rows
+        self.textures = []
+        self.setup()
+
+    def setup(self):
+        for i in range(self.rows):
+            for j in range(self.columns):
+                texture = arcade.load_texture(self.path, 
+                                              x=j*self.spritesize_x,
+                                              y=i*self.spritesize_y,
+                                              width=self.spritesize_x,
+                                              height=self.spritesize_y)
+                self.textures.append(texture)
+
 
 class CustomAnimation(arcade.AnimatedTimeBasedSprite):
-    def __init__(self, scale, image_width, image_height, init_frame, end_frame):
-        super().__init__(scale=scale, image_width=image_width, image_height=image_height)
-        
-        self.image_width= image_width
-        self.image_height = image_height
-        self.init_frame = init_frame
-        self.end_frame = end_frame
+    def __init__(self, scale, custom_sprite:CustomSprite, frames:list, duration:int):
+        self.custom_sprite = custom_sprite
+
+        super().__init__(scale=scale, image_width=custom_sprite.image_width, image_height=custom_sprite.image_height)
+
+        self.frames_ = frames
+        self.duration = duration
 
         self.setup()
 
-        
+
     def setup(self):
-        for i in range(self.init_frame, self.end_frame+1):
-            texture = arcade.load_texture("./ball.png", x=(i-(3*math.floor(i/3)))*self.image_width, y=math.floor(i/3)*self.image_height, width=self.image_width, height=self.image_height)
+        for i in range(len(self.custom_sprite.textures)):
+            if i not in self.frames_:
+                continue
+            texture = self.custom_sprite.textures[i]
             self.textures.append(texture)
-
-            frame = arcade.AnimationKeyframe(0, 0.00142, texture)
+            frame = arcade.AnimationKeyframe(0, self.duration, texture)
             self.frames.append(frame)
-
-        self.center_x = 800 // 2
-        self.center_y = 600 // 2
     
 
 class GameWindow(arcade.Window):
@@ -31,19 +56,28 @@ class GameWindow(arcade.Window):
         self.set_location(200,200)
 
         arcade.set_background_color(arcade.color.WHITE)
+        self.player = None
         self.player_idle = None
         self.player_roll = None
+        self.speed = 300
 
         self.move_right = False
-        self.move_left = True
+        self.move_left = False
 
         self.setup()
 
     def setup(self):
         self.player_list = arcade.SpriteList()
-        self.player_idle = CustomAnimation(3, 24, 24, 0, 2)
+
+        self.player = CustomSprite("./ball.png", 3, 5)
+        
+        self.player_idle = CustomAnimation(3, self.player, [0,1,2], 100)
+        self.player_idle.center_x = 800 //2
+        self.player_idle.center_y = 600 //2
         self.player_idle.enabled = True
-        self.player_roll = CustomAnimation(3, 24, 24, 7, 12)
+        self.player_roll = CustomAnimation(3, self.player, [7,8,9,10,11,12], 60)
+        self.player_roll.center_x = 800 //2
+        self.player_roll.center_y = 600 //2
         self.player_roll.enabled = False
 
         self.player_list.append(self.player_idle)
@@ -77,6 +111,22 @@ class GameWindow(arcade.Window):
         for anim in self.player_list:
             if(anim.enabled == True):
                 anim.update_animation()
+
+        if self.move_right:
+            self.player_idle.center_x += self.speed * delta_time
+            self.player_roll.center_x += self.speed * delta_time
+        if self.move_left:
+            self.player_idle.center_x -= self.speed * delta_time
+            self.player_roll.center_x -= self.speed * delta_time
+
+        if(self.player_idle.center_x > 824):
+            self.player_idle.center_x = -24
+            self.player_roll.center_x = -24
+
+        if(self.player_idle.center_x < -24):
+            self.player_idle.center_x = 823
+            self.player_roll.center_x = 823
+        
 
 
 GameWindow(800,600, "Ejemplo encapsulamento")
