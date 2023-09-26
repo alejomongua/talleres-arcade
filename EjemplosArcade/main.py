@@ -3,7 +3,7 @@ import math
 import arcade
 import arcade.gui
 from topics.sprite import ExampleSprite
-from topics.animation_inputs import ExampleAnimation
+from topics.animation_inputs import ExampleAnimation, ExampleInputsAnim
 
 # Definición de constantes
 WINDOW_WIDTH = 800
@@ -96,7 +96,8 @@ class MyWindow(arcade.Window):
 
         #Consumo elementos niveles
         self.example_sprite = ExampleSprite(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
-        self.example_animation = ExampleAnimation()
+        self.example_animation = ExampleAnimation('../assets/ball.png')
+        self.example_input = ExampleInputsAnim('../assets/frog.png')
 
         # Atributos para el objeto "drag and drop"
         self.circle_x = WINDOW_WIDTH // 2
@@ -105,7 +106,6 @@ class MyWindow(arcade.Window):
         self.is_circle_being_dragged = False
 
     def on_click_anim(self, event):
-        self.example_animation.set_position(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
         self.level = OPCION_ANIM
 
     def on_click_input(self, event):
@@ -129,26 +129,32 @@ class MyWindow(arcade.Window):
         if self.level == OPCION_SPRITE:
             self.example_sprite.draw()
         
-        if self.level == OPCION_ANIM or self.level == OPCION_INPUT:
+        if self.level == OPCION_ANIM:
             self.example_animation.draw()#Permite dibujar el objeto 'manager' que contiene los elementos de UI
 
         if self.level == OPCION_DRAG_N_DROP:
             arcade.draw_circle_filled(self.circle_x, self.circle_y, self.circle_radius, arcade.color.BLUE)
 
+        if self.level == OPCION_INPUT:
+            self.example_input.draw()#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+
 
     def on_update(self, delta_time):
-        if self.level == OPCION_ANIM or self.level == OPCION_INPUT:
+        if self.level == OPCION_ANIM:
             self.example_animation.update(delta_time)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+
+        if self.level == OPCION_INPUT:
+            self.example_input.update(delta_time)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
 
 
     def on_key_press(self, symbol, modifiers):
         if self.level == OPCION_INPUT:
-            self.example_animation.key_press(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+            self.example_input.key_press(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
     
 
     def on_key_release(self, symbol, modifiers):
         if self.level == OPCION_INPUT:
-            self.example_animation.key_release(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+            self.example_input.key_release(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
 
 
     def on_mouse_press(self, x, y, button, key_modifiers):
