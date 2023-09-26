@@ -103,6 +103,10 @@ class CustomAnimation(arcade.AnimatedTimeBasedSprite):
         """
         self.center_x, self.center_y = value
 
+    def set_position(self, x, y):
+        self.center_x = x
+        self.center_y = y
+
     def update_position(self, delta_x, delta_y):
         """
         Actualiza la posición del sprite según los deltas dados.

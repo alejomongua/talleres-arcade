@@ -50,18 +50,21 @@ class ExampleAnimation():
             self.__move_left = True
 
         # Activar animación de rodar y desactivar animación de estar quieto
-        self.__player_idle.enabled = False
-        self.__player_roll.enabled = True
+        if self.__move_right or self.__move_left:
+            self.__player_idle.enabled = False
+            self.__player_roll.enabled = True
 
     def key_release(self, symbol, modifiers):
         if symbol == arcade.key.RIGHT:
             self.__move_right = False
+
         if symbol == arcade.key.LEFT:
             self.__move_left = False
 
         # Activar animación de estar quieto y desactivar animación de rodar
-        self.__player_idle.enabled = True
-        self.__player_roll.enabled = False
+        if self.__move_right == False and self.__move_left == False:
+            self.__player_idle.enabled = True
+            self.__player_roll.enabled = False
 
     def draw(self):
         for anim in self.__player_list:
@@ -80,3 +83,7 @@ class ExampleAnimation():
         if self.__move_left:
             self.__player_idle.update_position(-self.__speed * delta_time, 0)
             self.__player_roll.update_position(-self.__speed * delta_time, 0)
+
+    def set_position(self, x, y):
+        self.__player_idle.set_position(x, y)
+        self.__player_roll.set_position(x, y)

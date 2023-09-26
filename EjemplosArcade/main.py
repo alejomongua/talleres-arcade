@@ -1,7 +1,7 @@
 import arcade
 import arcade.gui
 from topics.sprite import ExampleSprite
-from topics.animation import ExampleAnimation
+from topics.animation_inputs import ExampleAnimation
 
 # Definición de constantes
 WINDOW_WIDTH = 800
@@ -82,10 +82,11 @@ class MyWindow(arcade.Window):
         )
 
         #Consumo elementos niveles
-        self.example_animation = ExampleAnimation()
         self.example_sprite = ExampleSprite(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
+        self.example_animation = ExampleAnimation()
 
     def on_click_anim(self, event):
+        self.example_animation.set_position(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
         self.level = OPCION_ANIM
 
     def on_click_input(self, event):
