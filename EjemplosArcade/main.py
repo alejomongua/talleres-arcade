@@ -1,6 +1,7 @@
 import arcade
 import arcade.gui
 from topics.sprite import ExampleSprite
+from topics.animation import ExampleAnimation
 
 class QuitButton(arcade.gui.UIFlatButton):
     def on_click(self, event: arcade.gui.UIOnClickEvent):
@@ -34,6 +35,10 @@ class MyWindow(arcade.Window):
         anim_button = arcade.gui.UIFlatButton(text="Animation", width=200)
         self.v_box.add(anim_button.with_space_around(bottom=20))
 
+        #Input button
+        input_button = arcade.gui.UIFlatButton(text="Input", width=200)
+        self.v_box.add(input_button.with_space_around(bottom=20))
+
         #Return button
         return_button = arcade.gui.UIFlatButton(text="Volver", width=200)
         self.return_box.add(return_button.with_space_around(bottom=20))
@@ -50,6 +55,7 @@ class MyWindow(arcade.Window):
         #Opción 3: Consumir funciones definidas dentro del contexto de la clase
         anim_button.on_click = self.on_click_anim
         return_button.on_click = self.on_click_return
+        input_button.on_click = self.on_click_input
 
         # Create a widget to hold the v_box widget, that will center the buttons
         self.main_manager.add(
@@ -67,13 +73,16 @@ class MyWindow(arcade.Window):
         )
 
         #Consumo elementos niveles
-        self.example_sprite = ExampleSprite()
+        self.example_animation = ExampleAnimation()
 
     #def setup(self):
 
 
     def on_click_anim(self, event):
-        print("Anim:")
+        self.level = 2
+
+    def on_click_input(self, event):
+        self.level = 3
 
     def on_click_return(self, event):
         self.level = 0
@@ -81,30 +90,30 @@ class MyWindow(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         self.clear()
-        if(self.level == 0):
+        if self.level == 0:
             self.main_manager.draw()#Permite dibujar el objeto 'manager' que contiene los elementos de UI
         else:
             self.level_manager.draw()
         
         
-        if(self.level == 1):
-            self.level_manager.draw()
-            self.example_sprite.draw()#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+        if self.level == 2 or self.level == 3:
+            self.example_animation.draw()#Permite dibujar el objeto 'manager' que contiene los elementos de UI
 
 
     def on_update(self, delta_time):
-        if(self.level == 1):
-            self.example_sprite.update(delta_time)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+        if self.level == 2 or self.level == 3:
+            self.example_animation.update(delta_time)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
 
 
     def on_key_press(self, symbol, modifiers):
-        if(self.level == 1):
-            self.example_sprite.key_press(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+        if self.level == 3:
+            self.example_animation.key_press(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
     
 
     def on_key_release(self, symbol, modifiers):
-        if(self.level == 1):
-            self.example_sprite.key_release(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+        if self.level == 3:
+            self.example_animation.key_release(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+
 
 window = MyWindow()
 arcade.run()
