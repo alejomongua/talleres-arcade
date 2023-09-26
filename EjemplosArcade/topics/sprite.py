@@ -1,37 +1,27 @@
 import os
 import arcade
-from PIL import Image
-
-import sys
-sys.path.append("..")
-from helpers import CustomSprite
 
 class ExampleSprite():
-    def __init__(self):
+    """Ejemplo de sprite sin animación"""
+    def __init__(self, pos_x, pos_y):
         # Atributos privados para el jugador y animaciones
-        self.__player = None
-        self.__player_idle = None
-        self.__player_roll = None
-        self.__speed = 300
+        self.__x = pos_x
+        self.__y = pos_y
+        self.__sprite = None
 
-        # Atributos privados para el movimiento
-        self.__move_right = False
-        self.__move_left = False
-
-        # Inicializar el juego
+        # Inicializar el sprite
         self.setup()
 
     def setup(self):
-        self.__player_list = arcade.SpriteList()
-
         # Obtener la ruta del directorio donde se encuentra el archivo de Python actual
         current_directory = os.path.dirname(os.path.abspath(__file__))
 
         # Construir la ruta completa al archivo 'ball.png'
-        ball_path = os.path.join(current_directory, '../assets/ball.png')
+        sprite_path = os.path.join(current_directory, '../assets/robot1.png')
 
-        # Crear sprites y animaciones para el jugador
-        self.__player = CustomSprite(ball_path, 3, 5)
+        self.__sprite = arcade.Sprite(sprite_path, 0.5)
+        self.__sprite.center_x = self.__x
+        self.__sprite.center_y = self.__y
 
     def draw(self):
-        print("Test")
+        self.__sprite.draw()

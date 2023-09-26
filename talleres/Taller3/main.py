@@ -50,12 +50,11 @@ class CustomSprite():
         """
         return self.__textures
 
-
 class CustomAnimation(arcade.AnimatedTimeBasedSprite):
     """
     Clase para manejar animaciones personalizadas.
     """
-    def __init__(self, scale, custom_sprite:CustomSprite, frames:list, duration:int):
+    def __init__(self, scale:int, custom_sprite:CustomSprite, frames:list, duration:int):
         """
         Inicializa una nueva animación personalizada.
         
@@ -197,10 +196,8 @@ class GameWindow(arcade.Window):
         """
         Maneja los eventos de soltar una tecla.
         """
-        if symbol == arcade.key.RIGHT:
-            self.__move_right = False
-        if symbol == arcade.key.LEFT:
-            self.__move_left = False
+        self.__move_right = False
+        self.__move_left = False
 
         # Activar animación de estar quieto y desactivar animación de rodar
         self.__player_idle.enabled = True
@@ -230,7 +227,6 @@ class GameWindow(arcade.Window):
         if self.__move_left:
             self.__player_idle.update_position(-self.__speed * delta_time, 0)
             self.__player_roll.update_position(-self.__speed * delta_time, 0)
-
 
 if __name__ == '__main__':
     GameWindow(800,600, "Ejemplo encapsulamento")

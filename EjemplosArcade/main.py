@@ -3,16 +3,25 @@ import arcade.gui
 from topics.sprite import ExampleSprite
 from topics.animation import ExampleAnimation
 
+# Definición de constantes
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+
+OPCION_HOME = 0
+OPCION_SPRITE = 1
+OPCION_ANIM = 2
+OPCION_INPUT = 3
+
 class QuitButton(arcade.gui.UIFlatButton):
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         arcade.exit()
 
 class MyWindow(arcade.Window):
     def __init__(self):
-        super().__init__(800, 600, "Ejemplos Arcade", resizable=True)
+        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, "Ejemplos Arcade", resizable=True)
 
         #Variables de control
-        self.level = 0
+        self.level = OPCION_HOME
 
         # UIManager para realizar gestión de UI (User Interface).
         self.main_manager = arcade.gui.UIManager()
@@ -50,7 +59,7 @@ class MyWindow(arcade.Window):
         #Opción 2 Por medio de decoradoradores @sprite_button es posible realizar la gestión de eventos y propiedades
         @sprite_button.event("on_click")
         def on_click_sprite(event):
-            self.level = 1
+            self.level = OPCION_SPRITE
 
         #Opción 3: Consumir funciones definidas dentro del contexto de la clase
         anim_button.on_click = self.on_click_anim
@@ -74,44 +83,45 @@ class MyWindow(arcade.Window):
 
         #Consumo elementos niveles
         self.example_animation = ExampleAnimation()
-
-    #def setup(self):
-
+        self.example_sprite = ExampleSprite(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
 
     def on_click_anim(self, event):
-        self.level = 2
+        self.level = OPCION_ANIM
 
     def on_click_input(self, event):
-        self.level = 3
+        self.level = OPCION_INPUT
 
     def on_click_return(self, event):
-        self.level = 0
+        self.level = OPCION_HOME
 
     def on_draw(self):
         arcade.start_render()
         self.clear()
-        if self.level == 0:
+        if self.level == OPCION_HOME:
             self.main_manager.draw()#Permite dibujar el objeto 'manager' que contiene los elementos de UI
         else:
             self.level_manager.draw()
         
+
+        if self.level == OPCION_SPRITE:
+            self.example_sprite.draw()
         
-        if self.level == 2 or self.level == 3:
+        if self.level == OPCION_ANIM or self.level == OPCION_INPUT:
             self.example_animation.draw()#Permite dibujar el objeto 'manager' que contiene los elementos de UI
 
 
     def on_update(self, delta_time):
-        if self.level == 2 or self.level == 3:
+        if self.level == OPCION_ANIM or self.level == OPCION_INPUT:
             self.example_animation.update(delta_time)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
 
 
     def on_key_press(self, symbol, modifiers):
-        if self.level == 3:
+        if self.level == OPCION_INPUT:
             self.example_animation.key_press(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
     
 
     def on_key_release(self, symbol, modifiers):
-        if self.level == 3:
+        if self.level == OPCION_INPUT:
             self.example_animation.key_release(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
 
 
