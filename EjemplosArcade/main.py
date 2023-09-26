@@ -1,3 +1,5 @@
+import math
+
 import arcade
 import arcade.gui
 from topics.sprite import ExampleSprite
@@ -11,6 +13,12 @@ OPCION_HOME = 0
 OPCION_SPRITE = 1
 OPCION_ANIM = 2
 OPCION_INPUT = 3
+OPCION_DRAG_N_DROP = 4
+
+def get_distance_between_points(x1, y1, x2, y2):
+    """ Calculate the distance between two points """
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
 
 class QuitButton(arcade.gui.UIFlatButton):
     def on_click(self, event: arcade.gui.UIOnClickEvent):
@@ -48,6 +56,10 @@ class MyWindow(arcade.Window):
         input_button = arcade.gui.UIFlatButton(text="Input", width=200)
         self.v_box.add(input_button.with_space_around(bottom=20))
 
+        #Drag and drop button
+        drag_and_drop_button = arcade.gui.UIFlatButton(text="Drag and drop", width=200)
+        self.v_box.add(drag_and_drop_button.with_space_around(bottom=20))
+
         #Return button
         return_button = arcade.gui.UIFlatButton(text="Volver", width=200)
         self.return_box.add(return_button.with_space_around(bottom=20))
@@ -65,6 +77,7 @@ class MyWindow(arcade.Window):
         anim_button.on_click = self.on_click_anim
         return_button.on_click = self.on_click_return
         input_button.on_click = self.on_click_input
+        drag_and_drop_button.on_click = self.on_click_drag_n_drop
 
         # Create a widget to hold the v_box widget, that will center the buttons
         self.main_manager.add(
@@ -85,12 +98,21 @@ class MyWindow(arcade.Window):
         self.example_sprite = ExampleSprite(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
         self.example_animation = ExampleAnimation()
 
+        # Atributos para el objeto "drag and drop"
+        self.circle_x = WINDOW_WIDTH // 2
+        self.circle_y = WINDOW_HEIGHT // 2
+        self.circle_radius = 50
+        self.is_circle_being_dragged = False
+
     def on_click_anim(self, event):
         self.example_animation.set_position(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
         self.level = OPCION_ANIM
 
     def on_click_input(self, event):
         self.level = OPCION_INPUT
+
+    def on_click_drag_n_drop(self, event):
+        self.level = OPCION_DRAG_N_DROP
 
     def on_click_return(self, event):
         self.level = OPCION_HOME
@@ -110,6 +132,9 @@ class MyWindow(arcade.Window):
         if self.level == OPCION_ANIM or self.level == OPCION_INPUT:
             self.example_animation.draw()#Permite dibujar el objeto 'manager' que contiene los elementos de UI
 
+        if self.level == OPCION_DRAG_N_DROP:
+            arcade.draw_circle_filled(self.circle_x, self.circle_y, self.circle_radius, arcade.color.BLUE)
+
 
     def on_update(self, delta_time):
         if self.level == OPCION_ANIM or self.level == OPCION_INPUT:
@@ -124,6 +149,30 @@ class MyWindow(arcade.Window):
     def on_key_release(self, symbol, modifiers):
         if self.level == OPCION_INPUT:
             self.example_animation.key_release(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+
+
+    def on_mouse_press(self, x, y, button, key_modifiers):
+        """ Called when the user presses a mouse button. """
+        if not self.level == OPCION_DRAG_N_DROP:
+            return
+        # Verifica si el círculo fue presionado
+        if get_distance_between_points(x, y, self.circle_x, self.circle_y) < self.circle_radius:
+            self.is_circle_being_dragged = True
+
+    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
+        if not self.level == OPCION_DRAG_N_DROP:
+            return
+        """ Called when the user releases a mouse button. """
+        self.is_circle_being_dragged = False
+
+    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+        """ User moves mouse """
+        if not self.level == OPCION_DRAG_N_DROP:
+            return
+        if self.is_circle_being_dragged:
+            self.circle_x += dx
+            self.circle_y += dy
+
 
 
 window = MyWindow()
