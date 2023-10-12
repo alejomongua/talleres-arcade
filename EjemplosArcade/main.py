@@ -113,9 +113,11 @@ class MyWindow(arcade.Window):
 
     def on_click_drag_n_drop(self, event):
         self.level = OPCION_DRAG_N_DROP
+        self.main_manager.disable()
 
     def on_click_return(self, event):
         self.level = OPCION_HOME
+        self.main_manager.enable()
 
     def on_draw(self):
         arcade.start_render()
