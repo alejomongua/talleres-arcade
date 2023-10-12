@@ -71,6 +71,7 @@ class MyWindow(arcade.Window):
         #Opción 2 Por medio de decoradoradores @sprite_button es posible realizar la gestión de eventos y propiedades
         @sprite_button.event("on_click")
         def on_click_sprite(event):
+            self.main_manager.disable()
             self.level = OPCION_SPRITE
 
         #Opción 3: Consumir funciones definidas dentro del contexto de la clase
@@ -106,16 +107,20 @@ class MyWindow(arcade.Window):
         self.is_circle_being_dragged = False
 
     def on_click_anim(self, event):
+        self.main_manager.disable()
         self.level = OPCION_ANIM
 
     def on_click_input(self, event):
+        self.main_manager.disable()
         self.level = OPCION_INPUT
 
     def on_click_drag_n_drop(self, event):
+        self.main_manager.disable()
         self.level = OPCION_DRAG_N_DROP
         self.main_manager.disable()
 
     def on_click_return(self, event):
+        self.main_manager.enable()
         self.level = OPCION_HOME
         self.main_manager.enable()
 
