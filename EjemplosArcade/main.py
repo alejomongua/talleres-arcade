@@ -4,6 +4,7 @@ import arcade
 import arcade.gui
 from topics.sprite import ExampleSprite
 from topics.animation_inputs import ExampleAnimation, ExampleInputsAnim
+from topics.gui import ExampleGui
 
 # Definición de constantes
 WINDOW_WIDTH = 800
@@ -14,6 +15,7 @@ OPCION_SPRITE = 1
 OPCION_ANIM = 2
 OPCION_INPUT = 3
 OPCION_DRAG_N_DROP = 4
+OPCION_GUI = 5
 
 def get_distance_between_points(x1, y1, x2, y2):
     """ Calculate the distance between two points """
@@ -60,6 +62,10 @@ class MyWindow(arcade.Window):
         drag_and_drop_button = arcade.gui.UIFlatButton(text="Drag and drop", width=200)
         self.v_box.add(drag_and_drop_button.with_space_around(bottom=20))
 
+        #Drag and drop button
+        gui_button = arcade.gui.UIFlatButton(text="GUI", width=200)
+        self.v_box.add(gui_button.with_space_around(bottom=20))
+
         #Return button
         return_button = arcade.gui.UIFlatButton(text="Volver", width=200)
         self.return_box.add(return_button.with_space_around(bottom=20))
@@ -79,6 +85,7 @@ class MyWindow(arcade.Window):
         return_button.on_click = self.on_click_return
         input_button.on_click = self.on_click_input
         drag_and_drop_button.on_click = self.on_click_drag_n_drop
+        gui_button.on_click = self.on_click_gui
 
         # Create a widget to hold the v_box widget, that will center the buttons
         self.main_manager.add(
@@ -99,6 +106,7 @@ class MyWindow(arcade.Window):
         self.example_sprite = ExampleSprite(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
         self.example_animation = ExampleAnimation('../assets/ball.png')
         self.example_input = ExampleInputsAnim('../assets/frog.png')
+        self.example_gui = ExampleGui()
 
         # Atributos para el objeto "drag and drop"
         self.circle_x = WINDOW_WIDTH // 2
@@ -119,6 +127,11 @@ class MyWindow(arcade.Window):
         self.level = OPCION_DRAG_N_DROP
         self.main_manager.disable()
 
+    def on_click_gui(self, event):
+        self.main_manager.disable()
+        self.level = OPCION_GUI
+        self.main_manager.disable()
+
     def on_click_return(self, event):
         self.main_manager.enable()
         self.level = OPCION_HOME
@@ -137,13 +150,16 @@ class MyWindow(arcade.Window):
             self.example_sprite.draw()
         
         if self.level == OPCION_ANIM:
-            self.example_animation.draw()#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+            self.example_animation.draw()
 
         if self.level == OPCION_DRAG_N_DROP:
             arcade.draw_circle_filled(self.circle_x, self.circle_y, self.circle_radius, arcade.color.BLUE)
 
         if self.level == OPCION_INPUT:
-            self.example_input.draw()#Permite dibujar el objeto 'manager' que contiene los elementos de UI
+            self.example_input.draw()
+
+        if self.level == OPCION_GUI:
+            self.example_gui.draw()
 
 
     def on_update(self, delta_time):
@@ -153,16 +169,13 @@ class MyWindow(arcade.Window):
         if self.level == OPCION_INPUT:
             self.example_input.update(delta_time)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
 
-
     def on_key_press(self, symbol, modifiers):
         if self.level == OPCION_INPUT:
             self.example_input.key_press(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
     
-
     def on_key_release(self, symbol, modifiers):
         if self.level == OPCION_INPUT:
             self.example_input.key_release(symbol, modifiers)#Permite dibujar el objeto 'manager' que contiene los elementos de UI
-
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """
