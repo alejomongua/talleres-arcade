@@ -117,7 +117,7 @@ class ExampleInputsAnim:
         self.__player_roll.enabled = False
 
         self.__player_die = CustomAnimation(
-            3, self.__player, [2, 13, 14], 100, loop=False
+            3, self.__player, [0, 1, 2, 3, 13, 14], 100, loop=False
         )
         self.__player_die.position = (800 // 2, 600 // 2)
         self.__player_die.enabled = False
