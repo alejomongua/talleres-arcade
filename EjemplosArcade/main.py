@@ -114,6 +114,18 @@ class MyWindow(arcade.Window):
         self.circle_radius = 50
         self.is_circle_being_dragged = False
 
+
+        map_name = "./assets/test.json"
+
+        # Read in the tiled map
+        self.tile_map = arcade.load_tilemap(map_name, scaling=2)
+
+        # Set wall SpriteList and any others that you have.
+        self.wall_list = self.tile_map.sprite_lists["test"]
+
+
+
+
     def on_click_anim(self, event):
         self.main_manager.disable()
         self.level = OPCION_ANIM
@@ -142,7 +154,9 @@ class MyWindow(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         self.clear()
+
         if self.level == OPCION_HOME:
+            self.wall_list.draw()
             self.main_manager.draw()#Permite dibujar el objeto 'manager' que contiene los elementos de UI
         else:
             self.level_manager.draw()
