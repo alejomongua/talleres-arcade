@@ -1,12 +1,13 @@
 import os
 import arcade
-from PIL import Image
 
 import sys
+
 sys.path.append("..")
 from helpers import CustomSprite, CustomAnimation
 
-class ExampleAnimation():
+
+class ExampleAnimation:
     def __init__(self, anim_path: str):
         # Atributos privados para el jugador y animaciones
         self.__anim_path = anim_path
@@ -35,7 +36,7 @@ class ExampleAnimation():
         self.__player_idle = CustomAnimation(1, self.__player, [0, 1], 120)
         self.__player_idle.position = (300, 600 // 2)
         self.__player_idle.enabled = True
-        self.__player_talk = CustomAnimation(1, self.__player, [5,6,7,8,9], 100)
+        self.__player_talk = CustomAnimation(1, self.__player, [5, 6, 7, 8, 9], 100)
         self.__player_talk.position = (500, 600 // 2)
         self.__player_talk.enabled = True
 
@@ -77,7 +78,7 @@ class ExampleAnimation():
                 anim.update_animation()
 
 
-class ExampleInputsAnim():
+class ExampleInputsAnim:
     def __init__(self, anim_path: str):
         # Atributos privados para el jugador y animaciones
         self.__anim_path = anim_path
@@ -89,6 +90,8 @@ class ExampleInputsAnim():
         # Atributos privados para el movimiento
         self.__move_right = False
         self.__move_left = False
+        self.time_left = 5
+        self.dead = False
 
         # Inicializar el juego
         self.setup()
@@ -107,15 +110,25 @@ class ExampleInputsAnim():
         self.__player_idle = CustomAnimation(3, self.__player, [0, 1, 2], 100)
         self.__player_idle.position = (800 // 2, 600 // 2)
         self.__player_idle.enabled = True
-        self.__player_roll = CustomAnimation(3, self.__player, [7, 8, 9, 10, 11, 12], 60)
+        self.__player_roll = CustomAnimation(
+            3, self.__player, [7, 8, 9, 10, 11, 12], 60
+        )
         self.__player_roll.position = (800 // 2, 600 // 2)
         self.__player_roll.enabled = False
+
+        self.__player_die = CustomAnimation(3, self.__player, [2, 13, 14], 200)
+        self.__player_die.position = (800 // 2, 600 // 2)
+        self.__player_die.enabled = False
 
         # Añadir animaciones a la lista de sprites
         self.__player_list.append(self.__player_idle)
         self.__player_list.append(self.__player_roll)
+        self.__player_list.append(self.__player_die)
 
     def key_press(self, symbol, modifiers):
+        if self.dead:
+            return
+
         if symbol == arcade.key.RIGHT:
             self.__move_right = True
         if symbol == arcade.key.LEFT:
@@ -127,6 +140,9 @@ class ExampleInputsAnim():
             self.__player_roll.enabled = True
 
     def key_release(self, symbol, modifiers):
+        if self.dead:
+            return
+
         if symbol == arcade.key.RIGHT:
             self.__move_right = False
 
@@ -139,11 +155,32 @@ class ExampleInputsAnim():
             self.__player_roll.enabled = False
 
     def draw(self):
+        if self.dead:
+            time_text = "Has muerto"
+        else:
+            time_text = f"Tiempo restante: {int(round(self.time_left))}"
+        arcade.draw_text(
+            time_text,
+            320,
+            200,
+            arcade.color.BLACK,
+            24,
+            anchor_x="center",
+            anchor_y="center",
+        )
+
         for anim in self.__player_list:
             if anim.enabled:
                 anim.draw()
 
     def update(self, delta_time):
+        # Disminuir el temporizador
+        self.time_left -= delta_time
+
+        if self.time_left <= 0:
+            self.time_left = 0
+            self.on_timer_finish()
+
         for anim in self.__player_list:
             if anim.enabled:
                 anim.update_animation()
@@ -152,10 +189,21 @@ class ExampleInputsAnim():
         if self.__move_right:
             self.__player_idle.update_position(self.__speed * delta_time, 0)
             self.__player_roll.update_position(self.__speed * delta_time, 0)
+            self.__player_die.update_position(self.__speed * delta_time, 0)
         if self.__move_left:
             self.__player_idle.update_position(-self.__speed * delta_time, 0)
             self.__player_roll.update_position(-self.__speed * delta_time, 0)
+            self.__player_die.update_position(-self.__speed * delta_time, 0)
 
     def set_position(self, x, y):
         self.__player_idle.set_position(x, y)
         self.__player_roll.set_position(x, y)
+
+    def on_timer_finish(self):
+        if self.dead:
+            return
+
+        self.dead = True
+        self.__player_idle.enabled = False
+        self.__player_roll.enabled = False
+        self.__player_die.enabled = True
