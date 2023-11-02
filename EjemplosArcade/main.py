@@ -8,7 +8,7 @@ from topics.gui import ExampleGui
 
 # Definición de constantes
 WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_HEIGHT = 640
 
 OPCION_HOME = 0
 OPCION_SPRITE = 1
