@@ -7,7 +7,7 @@ from topics.animation_inputs import ExampleAnimation, ExampleInputsAnim
 from topics.gui import ExampleGui
 
 # Definición de constantes
-WINDOW_WIDTH = 800
+WINDOW_WIDTH = 832
 WINDOW_HEIGHT = 640
 
 OPCION_HOME = 0
