@@ -141,6 +141,12 @@ class ExampleInputsAnim:
 
     def key_release(self, symbol, modifiers):
         if self.dead:
+            if symbol == arcade.key.SPACE:
+                self.dead = False
+                self.__player_idle.enabled = True
+                self.__player_roll.enabled = False
+                self.__player_die.enabled = False
+                self.time_left = 5
             return
 
         if symbol == arcade.key.RIGHT:
@@ -156,7 +162,7 @@ class ExampleInputsAnim:
 
     def draw(self):
         if self.dead:
-            time_text = "Has muerto"
+            time_text = "Has muerto, presiona espacio para reiniciar"
         else:
             time_text = f"Tiempo restante: {int(round(self.time_left))}"
         arcade.draw_text(
@@ -204,6 +210,8 @@ class ExampleInputsAnim:
             return
 
         self.dead = True
+        self.__move_left = False
+        self.__move_right = False
         self.__player_idle.enabled = False
         self.__player_roll.enabled = False
         self.__player_die.enabled = True
