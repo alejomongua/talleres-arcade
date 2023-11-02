@@ -1,14 +1,13 @@
-
 import arcade
 import arcade.gui
-
+import webbrowser
 
 PLACE_HOLDER = 'Tu nombre...'
 
 class ExampleGui():
     def __init__(self):
         self.custom_manager = arcade.gui.UIManager()
-        self.custom_manager.enable()
+        #self.custom_manager.enable()
 
         self.v_box = arcade.gui.UIBoxLayout()
 
@@ -68,12 +67,31 @@ class ExampleGui():
         self.v_box.add(ui_texture_button.with_space_around(bottom=20))
 
 
-        ui_resources = arcade.gui.UITextArea(text="https://api.arcade.academy/en/latest/resources.html?highlight=onscreen_controls",
-                                              width=450,
-                                              height=60,
-                                              font_size=12,
-                                              font_name="Arial")
-        self.v_box.add(ui_resources.with_space_around(bottom=20))
+
+        ui_resources = arcade.gui.UILabel(text="https://api.arcade.academy/en/latest/resources.html?highlight=onscreen_controls",
+            width=450,
+            height=60,
+            font_size=12,
+            text_color=arcade.color.BLUE,
+            font_name="Arial")
+
+        ui_resources_clickable = arcade.gui.UIInteractiveWidget(
+            width=450,
+            height=60,
+        )
+        ui_resources_clickable.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center_x",
+                anchor_y="center_y",
+                child=ui_resources)
+        )
+        
+        @ui_resources_clickable.event("on_click")
+        def on_ui_resources_click(event):
+            webbrowser.open(ui_resources.text)
+
+        
+        self.v_box.add(ui_resources_clickable.with_space_around(bottom=20))
 
         # Creación de widget para contener el v_box widget, permite centrado de objetos
         self.custom_manager.add(
@@ -82,9 +100,6 @@ class ExampleGui():
                 anchor_y="center_y",
                 child=self.v_box)
         )
-
-    def on_click_start(self, event):
-        print("Start:", event)
 
     def draw(self):
         self.custom_manager.draw()

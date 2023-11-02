@@ -131,11 +131,13 @@ class MyWindow(arcade.Window):
         self.main_manager.disable()
         self.level = OPCION_GUI
         self.main_manager.disable()
+        self.example_gui.custom_manager.enable()
 
     def on_click_return(self, event):
         self.main_manager.enable()
         self.level = OPCION_HOME
         self.main_manager.enable()
+        self.example_gui.custom_manager.disable()
 
     def on_draw(self):
         arcade.start_render()
