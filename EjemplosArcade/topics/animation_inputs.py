@@ -214,6 +214,7 @@ class ExampleInputsAnim:
         self.dead = True
         self.__move_left = False
         self.__move_right = False
+        self.__player_die.reset_animation()
         self.__player_idle.enabled = False
         self.__player_roll.enabled = False
         self.__player_die.enabled = True

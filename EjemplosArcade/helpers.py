@@ -142,3 +142,10 @@ class CustomAnimation(arcade.AnimatedTimeBasedSprite):
             self.center_y = -24
         if self.center_y < -24:
             self.center_y = 623
+
+    def reset_animation(self):
+        """
+        Reinicia la animación.
+        """
+        self.time_counter = 0.0
+        self.cur_frame_idx = 0
