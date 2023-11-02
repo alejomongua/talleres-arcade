@@ -1,0 +1,15 @@
+{ "columns":19,
+ "image":".\/tileset.png",
+ "imageheight":416,
+ "imagewidth":608,
+ "margin":0,
+ "name":"tileset",
+ "spacing":0,
+ "tilecount":247,
+ "tiledversion":"1.7.2",
+ "tileheight":32,
+ "tilewidth":32,
+ "transparentcolor":"#ff00ff",
+ "type":"tileset",
+ "version":"1.6"
+}
