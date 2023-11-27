@@ -1,10 +1,13 @@
+from helpers import CustomSprite, CustomAnimation
 import os
 import arcade
 
 import sys
 
 sys.path.append("..")
-from helpers import CustomSprite, CustomAnimation
+
+
+LAYER_NAME_PLATFORMS = "capa1"
 
 
 class ExampleAnimation:
@@ -36,7 +39,8 @@ class ExampleAnimation:
         self.__player_idle = CustomAnimation(1, self.__player, [0, 1], 120)
         self.__player_idle.position = (300, 600 // 2)
         self.__player_idle.enabled = True
-        self.__player_talk = CustomAnimation(1, self.__player, [5, 6, 7, 8, 9], 100)
+        self.__player_talk = CustomAnimation(
+            1, self.__player, [5, 6, 7, 8, 9], 100)
         self.__player_talk.position = (500, 600 // 2)
         self.__player_talk.enabled = True
 
@@ -93,6 +97,17 @@ class ExampleInputsAnim:
         self.time_left = 5
         self.dead = False
 
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        map_name = os.path.join(current_directory, "../assets/test2.tmx")
+        # Read in the tiled map
+        self.tile_map = arcade.load_tilemap(map_name, scaling=2)
+
+        # Set wall SpriteList and any others that you have.
+        self.wall_list = self.tile_map.sprite_lists["capa1"]
+
+        # self.scene = arcade.Scene.from_tilemap(self.tile_map)
+        self.physics_engine = None
+        self.physics_engine_roll = None
         # Inicializar el juego
         self.setup()
 
@@ -126,6 +141,20 @@ class ExampleInputsAnim:
         self.__player_list.append(self.__player_idle)
         self.__player_list.append(self.__player_roll)
         self.__player_list.append(self.__player_die)
+
+        layer_options = {
+            LAYER_NAME_PLATFORMS: {
+                "use_spatial_hash": True,
+            }
+        }
+
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.__player_idle, gravity_constant=1, walls=self.wall_list
+        )
+
+        self.physics_engine_roll = arcade.PhysicsEnginePlatformer(
+            self.__player_roll, gravity_constant=1, walls=self.wall_list
+        )
 
     def key_press(self, symbol, modifiers):
         if self.dead:
@@ -163,6 +192,8 @@ class ExampleInputsAnim:
             self.__player_roll.enabled = False
 
     def draw(self):
+        self.wall_list.draw()
+        # self.scene.draw()
         if self.dead:
             time_text = "Has muerto, presiona espacio para reiniciar"
         else:
@@ -183,7 +214,12 @@ class ExampleInputsAnim:
 
     def update(self, delta_time):
         # Disminuir el temporizador
-        self.time_left -= delta_time
+        # self.time_left -= delta_time
+
+        if self.__player_idle.enabled:
+            self.physics_engine.update()
+        if self.__player_roll.enabled:
+            self.physics_engine_roll.update()
 
         if self.time_left <= 0:
             self.time_left = 0
