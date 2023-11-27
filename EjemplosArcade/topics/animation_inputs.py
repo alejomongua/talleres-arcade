@@ -216,11 +216,6 @@ class ExampleInputsAnim:
         # Disminuir el temporizador
         # self.time_left -= delta_time
 
-        if self.__player_idle.enabled:
-            self.physics_engine.update()
-        if self.__player_roll.enabled:
-            self.physics_engine_roll.update()
-
         if self.time_left <= 0:
             self.time_left = 0
             self.on_timer_finish()
@@ -238,6 +233,16 @@ class ExampleInputsAnim:
             self.__player_idle.update_position(-self.__speed * delta_time, 0)
             self.__player_roll.update_position(-self.__speed * delta_time, 0)
             self.__player_die.update_position(-self.__speed * delta_time, 0)
+
+        if self.__player_idle.enabled:
+            self.set_position(self.__player_idle.center_x,
+                              self.__player_idle.center_y)
+            self.physics_engine.update()
+
+        if self.__player_roll.enabled == True:
+            self.set_position(self.__player_roll.center_x,
+                              self.__player_roll.center_y)
+            self.physics_engine_roll.update()
 
     def set_position(self, x, y):
         self.__player_idle.set_position(x, y)
